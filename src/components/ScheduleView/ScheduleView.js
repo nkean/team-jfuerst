@@ -122,11 +122,12 @@ class ScheduleView extends Component {
         console.log(newResource);
         const resourceId = newResource.id;
         const calendarID = newResource.calendarID;
-        const calendar = newResource.title
+        const calendar = newResource.title;
+        const backgroundColor = newResource.calendarColor;
         // END PARSE NEW RESOURCE TO LOCAL VARIABLES
 
         // UPDATE MOVED EVENT
-        let updatedMovedEvent = { ...event, start, end, resourceId, calendar, calendarID };
+        let updatedMovedEvent = { ...event, start, end, resourceId, calendar, calendarID, backgroundColor };
         console.log(updatedMovedEvent);
         console.log('event and updatedEvent have similar data?');
         console.log(updatedMovedEvent === event);

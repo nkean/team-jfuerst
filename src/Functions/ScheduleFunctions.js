@@ -38,35 +38,35 @@ export function convertAppointmentsFromDatabase(originalObject) {
             'appointmentType': originalObject.type,
             'calendar': originalObject.calendar,
             'calendarID': originalObject.calendarID,
-            'chargedHomeEnhancements': searchArray('Step 3: Add-ons',originalObject.forms, 0),
+            'chargedHomeEnhancements': searchArray('Step 3: Add-ons', originalObject.forms, 0),
             'chargedNeighborhoodEnhancements': searchArray('Step 3: Add-ons', originalObject.forms, 1),
-            'Combo/Code/Name of person present': searchArray('Step 1: Details',originalObject.forms,8),
+            'Combo/Code/Name of person present': searchArray('Step 1: Details', originalObject.forms, 8),
 
-            'condominiumComments': searchArray('Step 2: Freebies',originalObject.forms,2),
+            'condominiumComments': searchArray('Step 2: Freebies', originalObject.forms, 2),
 
-            'contactInfo': searchArray('Step 1: Details', originalObject.forms,9),
+            'contactInfo': searchArray('Step 1: Details', originalObject.forms, 9),
             'databaseID': originalObject._id,
             'date': originalObject.date,
             'duration': originalObject.duration,
             'end': moment(originalObject.datetime).add(Number(originalObject.duration), 'm').toDate(),
             'email': originalObject.email,
-            'fireplaceEnhancement': searchArray('Step 2: Freebies',originalObject.forms,0),
-            'howToAccessHome': searchArray('Step 1: Details', originalObject.forms,5),
+            'fireplaceEnhancement': searchArray('Step 2: Freebies', originalObject.forms, 0),
+            'howToAccessHome': searchArray('Step 1: Details', originalObject.forms, 5),
             'lat': originalObject.lat,
             'lng': originalObject.lng,
             'phone': originalObject.phone,
 
-            'notes': searchArray('Step 4: Notes',originalObject.forms,0,),
+            'notes': searchArray('Step 4: Notes', originalObject.forms, 0, ),
 
             'numberOfBedrooms': searchArray('Step 1: Details', originalObject.forms, 10),
 
-            'numberOfBathrooms': searchArray('Step 1: Details', originalObject.forms,11),
-            'pets': searchArray('Step 1: Details',originalObject.forms,6),
+            'numberOfBathrooms': searchArray('Step 1: Details', originalObject.forms, 11),
+            'pets': searchArray('Step 1: Details', originalObject.forms, 6),
 
-            'propertyComments':searchArray('Step 4: Notes',originalObject.forms,0,),
+            'propertyComments': searchArray('Step 4: Notes', originalObject.forms, 0, ),
 
-            'forms': searchArray('5 Simple Steps to Awesome!',originalObject.forms,2),
-            
+            'forms': searchArray('5 Simple Steps to Awesome!', originalObject.forms, 2),
+
             'id': originalObject.id,
             'isRecurrence': false,
             'isRecurrenceEdit': false,
@@ -76,10 +76,10 @@ export function convertAppointmentsFromDatabase(originalObject) {
             'resourceId': originalObject.calendar,
             // 'shootConfirmed': 
 
-            'squareFoot': searchArray('Step 1: Details',originalObject.forms,3),
+            'squareFoot': searchArray('Step 1: Details', originalObject.forms, 3),
 
             'start': moment(originalObject.datetime, 'YYYY-MM-DDTHH:mm:ssZ').toDate(),
-            'tvScreenEnhancement': searchArray('Step 2: Freebies',originalObject.forms,1),
+            'tvScreenEnhancement': searchArray('Step 2: Freebies', originalObject.forms, 1),
             //difference between propertyComments and notes?
         };
         return finalObject;
@@ -159,11 +159,37 @@ export function executeSubmitChangesToThirdPartyAPI(props) {
 
 // PARSE EVENTS ARRAY FOR UNIQUE RESOURCES AND BUILD A UNIQUE-RESOURCES ARRAY
 export function extractResourcesFromCalendars(originalObject) {
-    const resourceList = originalObject.map(currentResource => {
+
+    // COLORS FOR ASSIGNING TO CALENDAR
+    const colors = [
+        '#B150FB',
+        '#497DFB',
+        '#E5427A',
+        '#39B341',
+        '#52FCFD',
+        '#FD994F',
+        '#51FD7D',
+        '#054646',
+        '#8C161C',
+        '#112E65',
+        '#894D1C',
+        '#F34447',
+        '#7E7916',
+        '#5A4FFB',
+        '#FB4EEA',
+        '#C5FD56',
+        '#FC634D',
+        '#FEF357',
+        '#4FD7FD',
+        '#41CBB5',
+    ];
+    // END COLORS FOR ASSIGNING TO CALENDAR
+    const resourceList = originalObject.map((currentResource, i) => {
         return {
             id: currentResource.name,
             title: currentResource.name,
             calendarID: currentResource.id,
+            calendarColor: colors[i]
         }
     });
     return resourceList;
@@ -200,6 +226,8 @@ export function orderEventsByResourceAndTime(resourcesArray, eventsArray) {
     console.log(eventsArray);
     // create array to contain an array of events for each resource
     let arrayOfArrays = [];
+    let backgroundColor;
+    let updatedEvent;
     // creates an array of events for each resource
     for (let i = 0; i < resourcesArray.length; i++) {
         let currentResource = resourcesArray[i];
@@ -207,7 +235,12 @@ export function orderEventsByResourceAndTime(resourcesArray, eventsArray) {
         // each event is checked by resource id and pushed into that resources' array of events
         for (let j = 0; j < eventsArray.length; j++) {
             if (eventsArray[j].resourceId === currentResource.id) {
-                newArray.push(eventsArray[j])
+                updatedEvent = eventsArray[j];
+                backgroundColor = currentResource.calendarColor;
+                updatedEvent.backgroundColor = backgroundColor;
+                console.log('event with updated background color:');
+                console.log(updatedEvent);
+                newArray.splice([j], 1, updatedEvent);
             }
         }
         newArray.sort(compareEventStartTimes);
@@ -240,7 +273,7 @@ export function updateOriginsEventWithDriveData(currentDriveData, eventToUpdate)
     // convert drive time in seconds to drive time in minutes (to nearest minute)
     let driveTimeToNextAppointment = Math.round(currentDriveData.duration / 60); // convert time in seconds to minutes
     // convert drive distance in meters to drive distance in miles (to nearest tenth mile)
-    let driveDistanceToNextAppointment = Number(Math.round((currentDriveData.distance / 1609.34)+'e2')+'e-2'); 
+    let driveDistanceToNextAppointment = Number(Math.round((currentDriveData.distance / 1609.34) + 'e2') + 'e-2');
     // UPDATE EVENT END TIME TO INCLUDE DRIVE TIME
     end = moment(eventToUpdate.end).add(driveTimeToNextAppointment, 'm').toDate();
     console.log(`after drive time, currentEvent's end is ${end}`);

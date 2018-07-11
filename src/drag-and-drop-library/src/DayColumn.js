@@ -369,7 +369,7 @@ class DaySlot extends React.Component {
       let dayClass = this.props.view === 'day' ? 'colwrap' : '';
 
       if (eventPropGetter)
-        var { style: xStyle, className } = eventPropGetter(event, start, end, _isSelected)
+        var { style: xStyle, className } = eventPropGetter(event, start, end, _isSelected,)
 
       let { height, top, width, xOffset } = style
 
@@ -382,7 +382,10 @@ class DaySlot extends React.Component {
               top: `${top}%`,
               height: `${height}%`,
               [isRtl ? 'right' : 'left']: `${Math.max(0, xOffset)}%`,
-              width: `${width}%`
+              width: `${width}%`,
+              // SET EVENT BACKGROUND COLOR BASED UPON EVENT KEY
+              backgroundColor: `${event.backgroundColor}`
+              // END SET EVENT BACKGROUND COLOR BASED UPON EVENT KEY
             }}
             className={cn(`rbc-event ${dayClass}`, className, {
               'rbc-selected': _isSelected,

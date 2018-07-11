@@ -26,7 +26,7 @@ class MapContainer extends Component {
         let appointments = this.props.reduxState.mapData.mapData;
         let placeDisplayOnMarker = appointments.map(((appointment, i) => {
             return (
-                <Marker key={appointment._id} position={{ lat: appointment.lat, lng: appointment.lng }} icon={appointment.marker} />
+                <Marker key={appointment._id} position={{ lat: appointment.lat, lng: appointment.lng }} icon={appointment.marker} title={`${appointment.calendar}: ${appointment.time}`}/>
             )
         }));
 
