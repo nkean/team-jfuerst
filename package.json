@@ -1,5 +1,5 @@
 {
-  "name": "prime-solo-project",
+  "name": "prime-group-project",
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:5000",
@@ -80,7 +80,7 @@
     "react-dom": "^15.3.0",
     "release-script": "^1.0.0",
     "rimraf": "^2.4.2",
-    "webpack": "^2.4.1",
+    "webpack": "^3.1.0",
     "webpack-atoms": "^1.0.2",
     "webpack-dev-server": "^2.4.5"
   }
